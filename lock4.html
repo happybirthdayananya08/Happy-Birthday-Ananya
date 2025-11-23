@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Another Secret Chamber Whisper the Key</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<style>
+  body{ 
+    margin:0; 
+    min-height:100vh; 
+    display:flex; 
+    align-items:center; 
+    justify-content:center;
+    background: radial-gradient(ellipse at top, #fff8fb, #ffe8f3, #ffd9ec),
+                radial-gradient(circle at 80% 20%, rgba(255, 230, 250, 0.4), transparent 50%),
+                radial-gradient(circle at 20% 80%, rgba(255, 220, 245, 0.3), transparent 50%);
+    font-family:"Georgia", serif; 
+    color:#4a235a;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  /* Magical sparkles */
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+      radial-gradient(circle at 25% 15%, rgba(255, 255, 255, 0.8) 1px, transparent 0),
+      radial-gradient(circle at 75% 85%, rgba(255, 255, 255, 0.6) 1px, transparent 0),
+      radial-gradient(circle at 15% 65%, rgba(255, 255, 255, 0.7) 1px, transparent 0),
+      radial-gradient(circle at 85% 35%, rgba(255, 255, 255, 0.5) 1px, transparent 0);
+    background-size: 250px 250px, 350px 350px, 450px 450px, 550px 550px;
+    z-index: -1;
+    animation: sparkle 20s linear infinite;
+  }
+  
+  @keyframes sparkle {
+    0% { background-position: 0 0, 80px 120px, 200px 300px, 350px 80px; }
+    100% { background-position: 250px 250px, 430px 370px, 650px 550px, 900px 330px; }
+  }
+  
+  .panel{ 
+    background:rgba(255,255,255,0.92); 
+    padding:32px; 
+    border-radius:20px; 
+    width:92%; 
+    max-width:460px; 
+    text-align:center; 
+    box-shadow:0 15px 35px rgba(130,60,110,0.12);
+    border: 1px solid rgba(255, 215, 230, 0.6);
+    position: relative;
+    z-index: 10;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .panel:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(130,60,110,0.18);
+  }
+  
+  .panel::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 6px;
+    background: linear-gradient(to right, #ff9ec7, #ff6bb5, #ff9ec7);
+    border-radius: 20px 20px 0 0;
+  }
+  
+  h2{ 
+    color:#b71c6b; 
+    margin-bottom:12px; 
+    font-size:2rem;
+    text-shadow: 0 0 8px rgba(255, 217, 236, 0.5);
+    position: relative;
+  }
+  
+  h2::after {
+    content: "";
+    display: block;
+    width: 120px;
+    height: 3px;
+    background: linear-gradient(to right, transparent, #ff9ec7, transparent);
+    margin: 12px auto;
+    border-radius: 2px;
+  }
+  
+  p {
+    color: #6b3650;
+    font-size: 1.05rem;
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+  
+  input{ 
+    width:86%; 
+    padding:14px 16px; 
+    font-size:1.05rem; 
+    border-radius:12px; 
+    border:2px solid #ffd7e6; 
+    background: rgba(255, 255, 255, 0.8);
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(183, 28, 107, 0.05) inset;
+    font-family: "Georgia", serif;
+    outline: none;
+  }
+  
+  input:focus {
+    border-color: #ff6bb5;
+    box-shadow: 0 0 0 3px rgba(255, 107, 181, 0.2), 0 4px 12px rgba(183, 28, 107, 0.05) inset;
+  }
+  
+  .btn{ 
+    margin-top:18px; 
+    padding:12px 26px; 
+    border-radius:24px; 
+    border:none; 
+    background: linear-gradient(to bottom, #c2185b, #ad1457);
+    color:#fff; 
+    cursor:pointer;
+    font-size: 1.05rem;
+    font-weight: bold;
+    box-shadow: 0 6px 18px rgba(194, 24, 91, 0.3);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 22px rgba(194, 24, 91, 0.4);
+    background: linear-gradient(to bottom, #d81b60, #c2185b);
+  }
+  
+  .btn:active {
+    transform: translateY(1px);
+    box-shadow: 0 4px 12px rgba(194, 24, 91, 0.3);
+  }
+  
+  .btn::after {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -60%;
+    width: 20px;
+    height: 200%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: rotate(30deg);
+    transition: all 0.6s;
+  }
+  
+  .btn:hover::after {
+    left: 120%;
+  }
+  
+  .hint{ 
+    margin-top:16px; 
+    color:#7b3a56; 
+    font-size:.95rem; 
+    font-style: italic;
+    background: rgba(255, 217, 236, 0.2);
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 215, 230, 0.5);
+  }
+  
+  .hint code {
+    background: rgba(255, 255, 255, 0.6);
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: #b71c6b;
+    font-weight: bold;
+  }
+  
+  .err{ 
+    color:#b71c6b; 
+    margin-top:16px; 
+    display:none; 
+    font-weight: bold;
+    background: rgba(255, 217, 236, 0.3);
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid rgba(216, 27, 96, 0.2);
+    animation: shake 0.5s ease;
+  }
+  
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-5px); }
+    40%, 80% { transform: translateX(5px); }
+  }
+  
+  .magical-frame {
+    position: absolute;
+    top: -8px;
+    left: -8px;
+    right: -8px;
+    bottom: -8px;
+    border: 2px solid transparent;
+    border-radius: 22px;
+    background: linear-gradient(45deg, #ff9ec7, #ff6bb5, #ff9ec7) border-box;
+    -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: destination-out;
+    mask-composite: exclude;
+    z-index: -1;
+    opacity: 0.5;
+  }
+  
+  .floating-hearts {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 1;
+  }
+  
+  .heart {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    background: transparent;
+    opacity: 0.3;
+  }
+  
+  .heart::before,
+  .heart::after {
+    content: "";
+    position: absolute;
+    width: 9px;
+    height: 14px;
+    background: #ff9ec7;
+    border-radius: 9px 9px 0 0;
+  }
+  
+  .heart::before {
+    left: 9px;
+    transform: rotate(-45deg);
+    transform-origin: 0 100%;
+  }
+  
+  .heart::after {
+    left: 0;
+    transform: rotate(45deg);
+    transform-origin: 100% 100%;
+  }
+  
+  .chamber-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 20px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #fff, #ffdff0);
+    box-shadow: 0 6px 20px rgba(194, 24, 91, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid rgba(255, 215, 230, 0.8);
+    animation: float 5s ease-in-out infinite;
+  }
+  
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+  
+  @media (max-width: 500px) {
+    .panel {
+      padding: 24px 18px;
+    }
+    
+    h2 {
+      font-size: 1.7rem;
+    }
+    
+    input {
+      width: 90%;
+    }
+  }
+</style>
+</head>
+<body>
+  <div class="floating-hearts" id="heartsContainer"></div>
+  
+  <div class="panel">
+    <div class="magical-frame"></div>
+    
+    <div class="chamber-icon" aria-hidden="true">
+      <!-- Magical scroll icon -->
+      <svg width="42" height="42" viewBox="0 0 24 24" fill="none">
+        <path d="M9 12h6" stroke="#b71c6b" stroke-width="1.8" stroke-linecap="round"/>
+        <path d="M9 8h6" stroke="#b71c6b" stroke-width="1.8" stroke-linecap="round"/>
+        <path d="M9 16h4" stroke="#b71c6b" stroke-width="1.8" stroke-linecap="round"/>
+        <path d="M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" stroke="#b71c6b" stroke-width="1.5" fill="none"/>
+      </svg>
+    </div>
+
+    <h2>The Second Hidden Chamber</h2>
+    <p>Whisper the secret key to reveal the hidden letter.</p>
+
+    <input id="k" type="password" placeholder="Enter the secret key" aria-label="Secret Key">
+    <div><button class="btn" id="ok">Reveal the Secret</button></div>
+    <div class="err" id="err">That doesn't sound like the key... try again.</div>
+    <div class="hint">The password is princess' name.</div>
+  </div>
+
+<script>
+  const CORRECT = 'ananya'; // <-- change this to your secret password for chapter 4
+  
+  function attempt(){
+    const v = document.getElementById('k').value.trim();
+    if(v === CORRECT) {
+      // Add magical transition before redirecting
+      document.querySelector('.panel').style.transform = 'scale(1.05)';
+      document.querySelector('.panel').style.opacity = '0.9';
+      setTimeout(() => {
+        window.location.href = 'chapter4.html';
+      }, 400);
+    } else {
+      const err = document.getElementById('err'); 
+      err.style.display='block';
+      setTimeout(()=> err.style.display='none', 2000);
+    }
+  }
+  
+  document.getElementById('ok').addEventListener('click', attempt);
+  document.getElementById('k').addEventListener('keydown', function(e){ 
+    if(e.key==='Enter') attempt(); 
+  });
+  
+  // Create floating hearts
+  const heartsContainer = document.getElementById('heartsContainer');
+  const heartCount = 10;
+  
+  for (let i = 0; i < heartCount; i++) {
+    const heart = document.createElement('div');
+    heart.classList.add('heart');
+    
+    // Random position
+    const left = Math.random() * 100;
+    const top = Math.random() * 100;
+    
+    // Random animation delay and duration
+    const delay = Math.random() * 15;
+    const duration = 12 + Math.random() * 8;
+    
+    heart.style.left = `${left}%`;
+    heart.style.top = `${top}%`;
+    heart.style.animation = `floatHeart ${duration}s ${delay}s infinite linear`;
+    
+    heartsContainer.appendChild(heart);
+  }
+  
+  // Add CSS for floating animation
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes floatHeart {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 0.3;
+      }
+      25% {
+        transform: translateY(-15px) rotate(90deg);
+        opacity: 0.5;
+      }
+      50% {
+        transform: translateY(-30px) rotate(180deg);
+        opacity: 0.3;
+      }
+      75% {
+        transform: translateY(-15px) rotate(270deg);
+        opacity: 0.1;
+      }
+      100% {
+        transform: translateY(0) rotate(360deg);
+        opacity: 0.3;
+      }
+    }
+  `;
+  document.head.appendChild(style);
+</script>
+</body>
+</html>

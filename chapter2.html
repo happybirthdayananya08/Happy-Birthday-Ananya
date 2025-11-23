@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 2 Once Upon a Time</title>
+    <style>
+        :root {
+            --pink-light: #ffeef8;
+            --pink-medium: #ffd1e8;
+            --pink-dark: #ff8ec7;
+            --pink-deep: #ff5eb0;
+            --gold: #ffd700;
+            --gold-light: #fff9c4;
+            --sun-glow: #fff9c4;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            margin: 0;
+            padding: 30px 20px;
+            background: linear-gradient(135deg, var(--pink-light), var(--pink-medium), #ffd1e8);
+            font-family: "Georgia", serif;
+            color: #5a1a5a;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* Background Sun - Hidden Easter Egg */
+        .background-sun {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            width: 80vmin;
+            height: 80vmin;
+            background: radial-gradient(circle, var(--sun-glow) 0%, transparent 70%);
+            border-radius: 50%;
+            opacity: 0;
+            z-index: 0;
+            pointer-events: none;
+            transition: all 1.5s ease;
+            box-shadow: 0 0 100px var(--gold);
+        }
+        
+        .background-sun.active {
+            opacity: 0.7;
+            transform: translate(-50%, -50%) scale(1);
+        }
+        
+        /* Magical sparkles in background */
+        .sparkle {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 0;
+            z-index: 1;
+        }
+        
+        .page {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+        
+        h1 {
+            text-align: center;
+            font-size: 3rem;
+            color: #8a1a6a;
+            text-shadow: 0 0 15px white, 0 0 10px var(--gold);
+            margin-bottom: 20px;
+            position: relative;
+            display: inline-block;
+            padding: 0 20px;
+            background: linear-gradient(to right, #ff8ec7, #ff5eb0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            letter-spacing: 1px;
+        }
+        
+        h1:before, h1:after {
+            content: "✨";
+            color: var(--gold);
+            margin: 0 15px;
+            font-size: 2rem;
+        }
+        
+        .story {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1), 0 0 30px rgba(255, 182, 193, 0.3);
+            font-size: 1.2rem;
+            line-height: 1.8;
+            margin-top: 20px;
+            position: relative;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path fill="%23ffd1e8" opacity="0.2" d="M30,50 C30,65 45,70 50,70 C55,70 70,65 70,50 C70,35 55,30 50,30 C45,30 30,35 30,50 Z"/></svg>');
+        }
+        
+        .story:hover {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15), 0 0 40px rgba(255, 182, 193, 0.5);
+            border: 2px solid var(--pink-medium);
+            background: rgba(255, 255, 255, 0.95);
+        }
+        
+        .story p {
+            margin-bottom: 20px;
+            text-align: justify;
+            position: relative;
+            padding-left: 20px;
+        }
+        
+        .story p:before {
+            content: "✨";
+            position: absolute;
+            left: -10px;
+            top: 5px;
+            font-size: 1.2rem;
+        }
+        
+        /* Interactive Sun Button */
+        .sun-button {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            width: 80px;
+            height: 80px;
+            background: var(--gold-light);
+            border-radius: 50%;
+            box-shadow: 0 0 20px var(--gold);
+            cursor: pointer;
+            transition: all 0.5s ease;
+            z-index: 5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: #ff8a00;
+            border: 2px solid white;
+        }
+        
+        .sun-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 30px var(--gold), 0 0 40px rgba(255, 215, 0, 0.5);
+        }
+        
+        /* Secret Message */
+        .secret-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 0 40px var(--pink-deep);
+            text-align: center;
+            z-index: 10;
+            transition: transform 0.5s ease;
+            border: 3px solid var(--pink-medium);
+            max-width: 400px;
+            color: #5a1a5a;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path fill="%23ffd1e8" opacity="0.3" d="M30,50 C30,65 45,70 50,70 C55,70 70,65 70,50 C70,35 55,30 50,30 C45,30 30,35 30,50 Z"/></svg>');
+        }
+        
+        .secret-message.active {
+            transform: translate(-50%, -50%) scale(1);
+        }
+        
+        .secret-message h3 {
+            color: var(--pink-deep);
+            margin-bottom: 15px;
+            font-size: 1.8rem;
+        }
+        
+        .secret-message p {
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+        
+        .unlock-btn {
+            padding: 12px 30px;
+            background: var(--pink-deep);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(255, 94, 176, 0.3);
+        }
+        
+        .unlock-btn:hover {
+            background: var(--pink-dark);
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(255, 94, 176, 0.4);
+        }
+        
+        .photo-oval {
+            width: 160px;
+            height: 200px;
+            border-radius: 12px;
+            object-fit: cover;
+            border: 6px solid white;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            display: block;
+            margin: 18px auto;
+            background: linear-gradient(#fff, #ffeef7);
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .photo-oval:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(255, 94, 176, 0.4);
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 18px;
+            margin-top: 24px;
+        }
+        
+        .btn {
+            padding: 14px 32px;
+            border-radius: 50px;
+            border: none;
+            font-size: 1.1rem;
+            cursor: pointer;
+            background: linear-gradient(to right, var(--pink-deep), var(--pink-dark));
+            color: white;
+            text-decoration: none;
+            box-shadow: 0 5px 15px rgba(255, 94, 176, 0.3);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        
+        .btn:before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(255, 94, 176, 0.5);
+        }
+        
+        .btn:hover:before {
+            left: 100%;
+        }
+        
+        .hint {
+            text-align: center;
+            color: var(--pink-deep);
+            font-style: italic;
+            margin-top: 14px;
+            font-size: 1.1rem;
+        }
+
+        /* Magic wand cursor */
+        body {
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="%23ff5eb0" d="M7.5 5.6L5 7l1.4-2.5L5 2l2.5 1.4L10 2 8.6 4.5 10 7 7.5 5.6zm12 9.8L22 14l-1.4 2.5L22 19l-2.5-1.4L17 19l1.4-2.5L17 14l2.5 1.4zM22 2l-1.4 2.5L22 7l-2.5-1.4L17 7l1.4-2.5L17 2l2.5 1.4L22 2zM10.5 16.5l-1.4 2.5-1.4-2.5L5 15l2.5-1.4L5 12.2l1.4-2.5 1.4 2.5 2.5-1.4-1.4 2.5 1.4 2.5-2.5-1.4z"/></svg>'), auto;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 36px;
+            color: var(--pink-deep);
+            font-size: 1.1rem;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            body {
+                padding: 20px 10px;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .story {
+                padding: 20px;
+                font-size: 1.1rem;
+            }
+            
+            .background-sun {
+                width: 90vmin;
+                height: 90vmin;
+            }
+            
+            .sun-button {
+                width: 60px;
+                height: 60px;
+                top: 20px;
+                right: 20px;
+                font-size: 1.8rem;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 80%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Sun - Hidden Easter Egg -->
+    <div class="background-sun" id="backgroundSun"></div>
+    
+    <!-- Interactive Sun Button -->
+    <div class="sun-button" id="sunButton">☀️</div>
+    
+    <!-- Secret Message -->
+    <div class="secret-message" id="secretMessage">
+        <h3>Princess Magic! ✨</h3>
+        <p>You've discovered the secret of the enchanted sun!</p>
+        <p>A hidden chapter awaits in the royal sunshine...</p>
+        <button class="unlock-btn" id="unlockBtn">Unlock Chapter 3</button>
+    </div>
+
+    <div class="page">
+        <h1>Chapter 2 Once Upon a Time…</h1>
+
+        <div class="story">
+            <p>
+                Once upon a time, on a soft January morning, a princess named <strong>Ananya</strong> arrived,
+                and the world felt a little kinder as if the clouds themselves had stitched
+                pink ribbons for her coming.
+            </p>
+
+            <p>
+                And here, captured in a moment of pure joy, is Princess Ananya herself her radiant smile lighting up the kingdom like the first rays of dawn.
+            </p>
+
+            <!-- Your photo with click functionality -->
+            <img class="photo-oval" id="chapter2Photo" src= "photos\chapter2.jpg" alt="Princess Ananya - childhood photo">
+
+            <p>
+                The kingdom remembered her laughter, her brave little heart, and the way she chased
+                sunbeams on the balcony. Little did the world know many secret pages lay folded
+                inside her story, waiting to be revealed by royal magic.
+            </p>
+        </div>
+
+        <div class="controls">
+            <!-- Public path: Next goes to Chapter 5 -->
+            <a class="btn" href="chapter5.html">Next Chapter →</a>
+            <a class="btn" href="index.html">Back to Index</a>
+        </div>
+
+        <p class="hint">Click the sun in the corner to reveal hidden magic!</p>
+
+        <footer>Made with royal magic and pink ribbons</footer>
+    </div>
+
+    <script>
+        // Create magical sparkles on click
+        document.addEventListener('click', function(e) {
+            createSparkle(e.clientX, e.clientY);
+        });
+        
+        function createSparkle(x, y) {
+            const sparkle = document.createElement('div');
+            sparkle.classList.add('sparkle');
+            
+            const size = Math.random() * 15 + 5;
+            sparkle.style.width = `${size}px`;
+            sparkle.style.height = `${size}px`;
+            sparkle.style.left = `${x - size/2}px`;
+            sparkle.style.top = `${y - size/2}px`;
+            
+            document.body.appendChild(sparkle);
+            
+            // Animate sparkle
+            const animation = sparkle.animate([
+                { opacity: 0, transform: 'scale(0)' },
+                { opacity: 1, transform: 'scale(1)' },
+                { opacity: 0, transform: 'scale(0) rotate(180deg)' }
+            ], {
+                duration: 1000,
+                easing: 'ease-out'
+            });
+            
+            animation.onfinish = () => sparkle.remove();
+        }
+        
+        // Add some random sparkles on page load
+        window.addEventListener('load', function() {
+            for (let i = 0; i < 15; i++) {
+                setTimeout(() => {
+                    const x = Math.random() * window.innerWidth;
+                    const y = Math.random() * window.innerHeight;
+                    createSparkle(x, y);
+                }, i * 300);
+            }
+        });
+        
+        // Add subtle animation to story on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const story = document.querySelector('.story');
+            story.style.opacity = '0';
+            story.style.transform = 'translateY(30px)';
+            
+            setTimeout(() => {
+                story.animate([
+                    { opacity: 0, transform: 'translateY(30px)' },
+                    { opacity: 1, transform: 'translateY(0)' }
+                ], {
+                    duration: 800,
+                    fill: 'forwards',
+                    easing: 'ease-out'
+                });
+            }, 500);
+        });
+
+        // Sun Interaction
+        const sunButton = document.getElementById('sunButton');
+        const backgroundSun = document.getElementById('backgroundSun');
+        const secretMessage = document.getElementById('secretMessage');
+        const unlockBtn = document.getElementById('unlockBtn');
+        const chapter2Photo = document.getElementById('chapter2Photo');
+        
+        let sunClicked = false;
+        
+        // Click sun button
+        sunButton.addEventListener('click', function() {
+            if (!sunClicked) {
+                sunClicked = true;
+                
+                // Create sparkles around sun button
+                for (let i = 0; i < 20; i++) {
+                    setTimeout(() => {
+                        const rect = sunButton.getBoundingClientRect();
+                        const angle = (i / 20) * Math.PI * 2;
+                        const distance = 60;
+                        const x = rect.left + rect.width/2 + Math.cos(angle) * distance;
+                        const y = rect.top + rect.height/2 + Math.sin(angle) * distance;
+                        createSparkle(x, y);
+                    }, i * 100);
+                }
+                
+                // Enhance sun button glow
+                sunButton.style.boxShadow = '0 0 30px var(--gold), 0 0 50px rgba(255, 215, 0, 0.5)';
+                sunButton.style.transform = 'scale(1.2)';
+                
+                // Activate background sun (Easter egg!)
+                backgroundSun.classList.add('active');
+                
+                // Show secret message after delay
+                setTimeout(() => {
+                    secretMessage.classList.add('active');
+                }, 1000);
+            }
+        });
+        
+        // Unlock Chapter 3 from secret message
+        unlockBtn.addEventListener('click', function() {
+            window.location.href = 'lock3.html';
+        });
+        
+        // Click photo to go directly to lock3.html
+        chapter2Photo.addEventListener('click', function() {
+            // Add sparkle effect when photo is clicked
+            for (let i = 0; i < 15; i++) {
+                setTimeout(() => {
+                    const rect = chapter2Photo.getBoundingClientRect();
+                    const angle = (i / 15) * Math.PI * 2;
+                    const distance = 80;
+                    const x = rect.left + rect.width/2 + Math.cos(angle) * distance;
+                    const y = rect.top + rect.height/2 + Math.sin(angle) * distance;
+                    createSparkle(x, y);
+                }, i * 80);
+            }
+            
+            // Navigate to lock3.html after a short delay to show sparkles
+            setTimeout(() => {
+                window.location.href = 'lock3.html';
+            }, 800);
+        });
+    </script>
+</body>
+</html>

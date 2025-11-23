@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ananya's Fairytale</title>
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        background: linear-gradient(135deg, #fce4ec 0%, #f8bbd0 100%);
+        font-family: 'Georgia', serif;
+        text-align: center;
+        color: #4a235a;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+        position: relative;
+    }
+
+    /* Floating hearts background */
+    .floating-hearts {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    .heart {
+        position: absolute;
+        font-size: 20px;
+        color: rgba(236, 64, 122, 0.3);
+        animation: float 6s ease-in-out infinite;
+    }
+
+    @keyframes float {
+        0%, 100% {
+            transform: translateY(0) rotate(0deg);
+            opacity: 0;
+        }
+        50% {
+            opacity: 1;
+        }
+        100% {
+            transform: translateY(-100vh) rotate(360deg);
+        }
+    }
+
+    .content {
+        position: relative;
+        z-index: 1;
+        padding: 20px;
+    }
+
+    @keyframes gentle-float {
+        0% { transform: translateY(0) scale(1); }
+        50% { transform: translateY(-15px) scale(1.02); }
+        100% { transform: translateY(0) scale(1); }
+    }
+
+    h1 {
+        font-size: clamp(2.5rem, 5vw, 3.2rem);
+        margin: 20px 0 10px 0;
+        color: #ad1457;
+        text-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
+        animation: gentle-float 3s ease-in-out infinite;
+    }
+
+    .subtitle {
+        font-size: 1.2rem;
+        color: #7d3c5a;
+        margin-bottom: 30px;
+        font-style: italic;
+    }
+
+    .photo {
+        width: min(180px, 40vw);
+        height: min(180px, 40vw);
+        border-radius: 50%;
+        border: 6px solid white;
+        object-fit: cover;
+        box-shadow: 
+            0 0 25px white,
+            0 0 40px rgba(173, 20, 87, 0.3);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        animation: gentle-float 4s ease-in-out infinite;
+    }
+
+    .photo:hover {
+        transform: scale(1.05);
+        box-shadow: 
+            0 0 30px white,
+            0 0 50px rgba(173, 20, 87, 0.5);
+    }
+
+    .enter-btn {
+        padding: 16px 45px;
+        margin-top: 30px;
+        background: linear-gradient(135deg, #ad1457, #ec407a);
+        color: white;
+        font-size: clamp(1.2rem, 3vw, 1.5rem);
+        font-family: 'Georgia', serif;
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        box-shadow: 
+            0 0 20px rgba(173, 20, 87, 0.5),
+            0 4px 15px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .enter-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+        transition: left 0.5s;
+    }
+
+    .enter-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 
+            0 0 30px rgba(236, 64, 122, 0.7),
+            0 6px 20px rgba(0, 0, 0, 0.25);
+        background: linear-gradient(135deg, #ec407a, #ad1457);
+    }
+
+    .enter-btn:hover::before {
+        left: 100%;
+    }
+
+    .enter-btn:active {
+        transform: translateY(-1px);
+    }
+
+    a {
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    /* Responsive design */
+    @media (max-width: 768px) {
+        body {
+            padding: 20px;
+        }
+        
+        .photo {
+            width: 150px;
+            height: 150px;
+        }
+        
+        .enter-btn {
+            padding: 14px 35px;
+            margin-top: 25px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .photo {
+            width: 120px;
+            height: 120px;
+        }
+        
+        h1 {
+            margin: 15px 0 5px 0;
+        }
+        
+        .subtitle {
+            font-size: 1rem;
+            margin-bottom: 20px;
+        }
+    }
+</style>
+</head>
+<body>
+
+<!-- Floating hearts background -->
+<div class="floating-hearts" id="heartsContainer"></div>
+
+<div class="content">
+    <img src="photos\cover.jpg" 
+         alt="Ananya's Fairytale" 
+         class="photo">
+
+    <h1>Ananya's Fairytale</h1>
+
+    <a href="cover.html">
+        <button class="enter-btn">Enter the Story</button>
+    </a>
+</div>
+
+<script>
+    // Create floating hearts
+    function createHearts() {
+        const container = document.getElementById('heartsContainer');
+        const heartsCount = 15;
+        
+        for (let i = 0; i < heartsCount; i++) {
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+            heart.innerHTML = '❤';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDelay = Math.random() * 6 + 's';
+            heart.style.fontSize = (Math.random() * 15 + 15) + 'px';
+            container.appendChild(heart);
+        }
+    }
+
+    // Initialize when page loads
+    document.addEventListener('DOMContentLoaded', createHearts);
+</script>
+
+</body>
+</html>
