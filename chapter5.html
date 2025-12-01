@@ -166,6 +166,127 @@
     left: 120%;
   }
   
+  /* Envelope Styles */
+  .envelope-container {
+    margin: 30px auto;
+    max-width: 300px;
+    position: relative;
+    z-index: 5;
+  }
+  
+  .envelope-wrapper {
+    cursor: pointer;
+    perspective: 1000px;
+    width: 180px;
+    height: 120px;
+    margin: 0 auto;
+    position: relative;
+    transition: transform 0.3s ease;
+  }
+  
+  .envelope-wrapper:hover {
+    transform: translateY(-5px);
+  }
+  
+  .envelope {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+  
+  .envelope.open {
+    transform: rotateX(180deg);
+  }
+  
+  .envelope-front, .envelope-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  
+  .envelope-front {
+    background: linear-gradient(135deg, #ff9ec7, #ff6bb5);
+    box-shadow: 0 10px 25px rgba(150, 70, 120, 0.3);
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .envelope-flap {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    border-left: 90px solid transparent;
+    border-right: 90px solid transparent;
+    border-top: 60px solid #ff3b8d;
+    z-index: 3;
+  }
+  
+  .envelope-body {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 80px;
+    background: #ff6bb5;
+  }
+  
+  .envelope-seal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 40px;
+    height: 40px;
+    background: #ffd7e6;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(150, 70, 120, 0.4);
+    z-index: 4;
+  }
+  
+  .envelope-seal svg {
+    width: 24px;
+    height: 24px;
+    fill: #b71c6b;
+  }
+  
+  .envelope-back {
+    background: #ffd7e6;
+    transform: rotateX(180deg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    box-shadow: 0 10px 25px rgba(150, 70, 120, 0.2);
+  }
+  
+  .spotify-embed {
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  
+  .envelope-instruction {
+    margin-top: 15px;
+    color: #7b3a56;
+    font-style: italic;
+    font-size: 0.95rem;
+    text-align: center;
+    opacity: 0.8;
+  }
+  
   .floating-hearts {
     position: absolute;
     width: 100%;
@@ -253,6 +374,16 @@
     .card p {
       font-size: 1.05rem;
     }
+    
+    .envelope-wrapper {
+      width: 160px;
+      height: 110px;
+    }
+    
+    .envelope-flap {
+      border-left: 80px solid transparent;
+      border-right: 80px solid transparent;
+    }
   }
 </style>
 </head>
@@ -279,8 +410,37 @@
       </p>
 
       <p>
-        Her story continues. I am grateful to walk beside her.
+        Her story continues. I was grateful to walk beside her.
       </p>
+    </div>
+    
+    <!-- Envelope with Spotify song -->
+    <div class="envelope-container">
+      <div class="envelope-wrapper" id="envelopeWrapper">
+        <div class="envelope" id="envelope">
+          <div class="envelope-front">
+            <div class="envelope-flap"></div>
+            <div class="envelope-body"></div>
+            <div class="envelope-seal">
+              <svg viewBox="0 0 24 24">
+                <path d="M3 18v-12c0-1.1.9-2 2-2h14c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2h-14c-1.1 0-2-.9-2-2zm16-12h-14v12h14v-12zm-7 6l-5 3v-6l5 3zm5-3v6l-5-3 5-3z"/>
+              </svg>
+            </div>
+          </div>
+          <div class="envelope-back">
+            <div class="spotify-embed">
+              <iframe src="https://open.spotify.com/embed/track/1oghlB7Tm7Xo3M2BviDnic?utm_source=generator&theme=0" 
+                      width="100%" 
+                      height="100%" 
+                      frameBorder="0" 
+                      allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+                      loading="lazy">
+              </iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="envelope-instruction" id="envelopeInstruction">Click the envelope to open</div>
     </div>
 
     <div class="footer-note">To be continued…</div>
@@ -339,6 +499,39 @@
     }
   `;
   document.head.appendChild(style);
+  
+  // Envelope interaction
+  const envelopeWrapper = document.getElementById('envelopeWrapper');
+  const envelope = document.getElementById('envelope');
+  const envelopeInstruction = document.getElementById('envelopeInstruction');
+  let isOpen = false;
+  
+  envelopeWrapper.addEventListener('click', function() {
+    if (!isOpen) {
+      envelope.classList.add('open');
+      envelopeInstruction.textContent = "Click to close envelope";
+      isOpen = true;
+    } else {
+      envelope.classList.remove('open');
+      envelopeInstruction.textContent = "Click the envelope to open";
+      isOpen = false;
+    }
+  });
+  
+  // Add a small animation to the envelope seal on hover
+  envelopeWrapper.addEventListener('mouseenter', function() {
+    if (!isOpen) {
+      const seal = document.querySelector('.envelope-seal');
+      seal.style.transform = 'translate(-50%, -50%) scale(1.1)';
+    }
+  });
+  
+  envelopeWrapper.addEventListener('mouseleave', function() {
+    if (!isOpen) {
+      const seal = document.querySelector('.envelope-seal');
+      seal.style.transform = 'translate(-50%, -50%) scale(1)';
+    }
+  });
 </script>
 </body>
 </html>
